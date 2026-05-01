@@ -1,0 +1,33 @@
+01.05.26 20:44
+
+Starting this file to follow the dev on my ft_traceroute and help me clear my mind when having to reflect on what to do. 
+
+Traceroute is an utility that let you route the path a packet take to the target host. 
+Looking into how it works I realised that I could reuse a good part of my ft_ping since they both uses ICMP packet and raw socket.
+
+So to clarify what I have and what I need to change I'll write them as a reference. Then I'll write a list of the first things I'll need to do.
+
+What I have that will be useful for ft_traceroute:
+	-complete raw socket setup
+	-target host argument
+	-packet rx tx
+	-response parsing
+	-sending loop
+	-error handling
+	-Display functions
+	-Headers with stats
+
+What I need to change for ft_traceroute:
+	-Only need one argument for target host
+	-Change sending loop to send 3 packets at once and increment ttl (which start at 1)
+	-Change and find a solution to save stats for 3 packets
+	-Change loop condition to break when ECHO_REPLY is received
+	-Change display functions to match traceroute display
+
+What I should do to start:
+	-Change the Makefile and rename files if need be
+	-Start by changing the header file so then I can make the changes by correcting the compiler errors.
+	-Correct the main file so it take the right argument and right option
+	-Change the ttl before sending
+	-Correct the sending loop break condition and packets sent
+
