@@ -67,9 +67,9 @@ I'm not sure if icmp sequence is relevant in traceroute
 I've changed a few thing in the main loop, addes the for loop that goes 3 times, added an rtt array
 
 ANCHOR FOR NEXT SESSION
-Next time → 
+Next time → Continue working on the main loop, the logic and exiting, imcrementing ttl etc
 
 BILAN
-Victoire : 
-Appris : 
+Success : Got into it and started putting things into perspective ! 
+Learned : How traceroute logic work with how TTL and end condition matters
 =====================================================
