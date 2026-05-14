@@ -1,4 +1,32 @@
-#include "ft_ping.h"
+#include "ft_trace.h"
+
+double time_diff(struct timeval *send_time, struct timeval *rec_time)
+{
+    return(((rec_time->tv_sec - send_time->tv_sec) * 1000.0) + ((rec_time->tv_usec - send_time->tv_usec) / 1000.0));  
+}
+
+// This checksum algorithm is describde in the ICMP RFC 
+unsigned short checksum(void *b, int size)
+{
+    unsigned int cksum = 0;
+    unsigned short *buf = b;
+
+    while (size > 1)
+    {
+        cksum += *buf++;
+        size -= sizeof(unsigned short);
+    }
+    
+    if (size == 1)
+    {
+        cksum += *(unsigned char*)buf;
+    }
+
+    cksum = (cksum >> 16) + (cksum & 0xFFFF);
+    cksum += (cksum >> 16);
+
+    return (~cksum);
+}
 
 int resolve_hostname(char *hostname, char *ip)
 {

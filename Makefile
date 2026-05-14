@@ -1,4 +1,4 @@
-NAME = ft_ping
+NAME = ft_traceroute
 CC = cc
 
 HEADERS_DIR = ./headers
@@ -6,15 +6,12 @@ CFLAGS = -I$(HEADERS_DIR) -Wall -Wextra -Werror
 LDFLAGS = -lm
 
 SRCS = ./srcs/main.c \
-	   ./srcs/checksum.c \
-	   ./srcs/send_request.c \
+	   ./srcs/traceroute.c \
 	   ./srcs/parse_reply.c \
 	   ./srcs/signal_handler.c \
-	   ./srcs/resolve_hostname.c \
 	   ./srcs/display_infos.c \
-	   ./srcs/ping_utils.c \
+	   ./srcs/trace_utils.c \
 	   ./srcs/handle_ttl_exceeded.c \
-	   ./srcs/handle_timestamp_reply.c \
 	   ./srcs/handle_echo_reply.c
 
 		

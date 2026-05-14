@@ -30,4 +30,46 @@ What I should do to start:
 	-Correct the main file so it take the right argument and right option
 	-Change the ttl before sending
 	-Correct the sending loop break condition and packets sent
+	
+=====================================================
+SESSION — 14.05.26 15:41
+=====================================================
 
+SESION TASKS
+I want to this session those 3 tasks to get it going :
+→ [X] Change the makefile
+→ [X] Change the header file
+→ [] Change the loop exit condition and logic
+→ [] add an array of 3 rtt in the struct
+	
+- - - - - - - - - - - - - - - - - - - - - - - - -
+JOURNAL
+- - - - - - - - - - - - - - - - - - - - - - - - -
+
+Im starting by doing some find and replace on the first files, Makefile header and main. Quickly replacing ping with trace.
+
+So I've changed the ping word for trace practicaly everywhere, now Im gonne change the header file name. I also merge the checksum, resolve hostname and time diff functions under trace_utils
+
+I've modified a lot of files and now the project is compiling. I think that what I should be doing then is follow the original traceroute and bit by bit recreate what it's doing.
+
+I've just modified the display to match the first line of traceroute. I also added the max hops variable to the struct.
+
+Modifying the structure, the logic and reading the man traceroute made me understand that I'll need to use some sort of timeout mechanic. But I still don't really know if I need to calculate checksum for each probe.
+
+The idea for the loop is:
+	-send a probe with ttl=1
+	-wait for reply under timeout value
+	-if timeout -> print * and continue
+	-if reply, save rtt in array and continue
+	-when 3 rtt are saved increment ttl and go again
+I'm not sure if icmp sequence is relevant in traceroute
+
+I've changed a few thing in the main loop, addes the for loop that goes 3 times, added an rtt array
+
+ANCHOR FOR NEXT SESSION
+Next time → 
+
+BILAN
+Victoire : 
+Appris : 
+=====================================================

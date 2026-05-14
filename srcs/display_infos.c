@@ -1,4 +1,4 @@
-#include "ft_ping.h"
+#include "ft_trace.h"
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <netinet/ip.h>
@@ -10,7 +10,7 @@
  * This file should contains the functions used to display three part of the reference output:
  *
  *  -display_transmit(...) should contains the first line composed of:
- *      "PING domain_name (ip_address): PAYLOAD_SIZE data bytes" 
+ *      "trace domain_name (ip_address): PAYLOAD_SIZE data bytes" 
  *  so it uses 3 variable named hostname, ip_addr and PAYLOAD_SIZE.
  *
  *  -display_received(...) should run each time an ECHO_REPLY message is received
@@ -50,95 +50,58 @@ static const char *redirect_msg[4] =
     "Redirect Type of Service and Host"
 };
 
-void display_transmit(t_ping_stats *ping_infos)
+void display_transmit(t_trace_stats *trace_infos)
 {
-    printf("PING %s (%s): %d data bytes", ping_infos->hostname, ping_infos->ip_addr, PAYLOAD_SIZE);  
-    if (gptr_ping_options->verbose)
-        printf(", id 0x%x = %d", ping_infos->id, ping_infos->id);
+    printf("traceroute to %s (%s), %d hops max, %d byte packets",
+           trace_infos->hostname, 
+           trace_infos->ip_addr, 
+           trace_infos->max_hops,
+           PAYLOAD_SIZE);  
     printf("\n");
 }
 
-void display_received(t_ping_stats *ping_infos)
+void display_received(t_trace_stats *trace_infos)
 {
-    printf("%d bytes from %s: ", ping_infos->recv_size, ping_infos->ip_addr);
-    switch (ping_infos->icmp_type)
+    printf("%d bytes from %s: ", trace_infos->recv_size, trace_infos->ip_addr);
+    switch (trace_infos->icmp_type)
     {
         case ECHO_REPLY:
-            printf("icmp_seq=%d ttl=%d time=%.3f ms\n", ping_infos->icmp_sequence, ping_infos->ttl, ping_infos->timestamp);
+            printf("icmp_seq=%d ttl=%d time=%.3f ms\n", trace_infos->icmp_sequence, trace_infos->ttl, trace_infos->timestamp);
             break;
         case DEST_UNREACH:
-            printf("%s\n", unreach_msg[ping_infos->icmp_code]);
+            printf("%s\n", unreach_msg[trace_infos->icmp_code]);
             break;
         case TTL_EXCEED:
-            printf("%s\n", exceeded_msg[ping_infos->icmp_code]);
+            printf("%s\n", exceeded_msg[trace_infos->icmp_code]);
             break;
         case REDIRECT:
-            printf("%s\n", redirect_msg[ping_infos->icmp_code]);
+            printf("%s\n", redirect_msg[trace_infos->icmp_code]);
             break;
         case PRM_PROBLEM:
-            printf("%s\n", prm_problem_msg[ping_infos->icmp_code]);
+            printf("%s\n", prm_problem_msg[trace_infos->icmp_code]);
             break;
         default:
-            printf("Type %d message received\n", ping_infos->icmp_type);
+            printf("Type %d message received\n", trace_infos->icmp_type);
             break;
     };
 }
 
-void display_stats(t_ping_stats *ping_infos)
+void display_stats(t_trace_stats *trace_infos)
 {
     float error_rate = 0;
     double time_avg = 0;
     double time_dev = 0;
     
-    if (ping_infos->pckt_rx)
+    if (trace_infos->pckt_rx)
     {
-        printf("%f\n", ping_infos->time_total);
-        time_avg = ping_infos->time_total / ping_infos->pckt_rx;
-        time_dev = sqrt(ping_infos->ltime_total - time_avg * time_avg); //calculation of direct standard derivation
-        time_dev /= ping_infos->pckt_rx;
-        error_rate = fabs(((float)ping_infos->pckt_rx / (float)ping_infos->pckt_tx) * 100.0 - 100.0);
+        printf("%f\n", trace_infos->time_total);
+        time_avg = trace_infos->time_total / trace_infos->pckt_rx;
+        time_dev = sqrt(trace_infos->ltime_total - time_avg * time_avg); //calculation of direct standard derivation
+        time_dev /= trace_infos->pckt_rx;
+        error_rate = fabs(((float)trace_infos->pckt_rx / (float)trace_infos->pckt_tx) * 100.0 - 100.0);
     }
     
-    printf("--- %s ping statistics ---\n", ping_infos->hostname);
-    printf("%d packets transmitted, %d packets received, %.0f%% packet loss\n", ping_infos->pckt_tx, ping_infos->pckt_rx, error_rate); //here I have to actually calculate the percentage of packet loss
-    printf("round-trip min/avg/max/stddev = %.3f/%.3f/%.3f/%.3f ms\n", ping_infos->time_min, time_avg, ping_infos->time_max, time_dev);
-}
-
-void display_verbose_err(struct iphdr *ip, t_ping_stats *ping_infos)
-{
-    unsigned int *buf = (unsigned int *)ip;
-    
-    char src_addr[INET_ADDRSTRLEN];
-    char dst_addr[INET_ADDRSTRLEN];
-    inet_ntop(AF_INET, &(ip->saddr), src_addr, INET_ADDRSTRLEN);
-    inet_ntop(AF_INET, &(ip->daddr), dst_addr, INET_ADDRSTRLEN);
-    //To run inside send_request file just after the display_received function
-    //list of whats needed to match the inetutils ping
-    printf("IP Hdr Dump:\n");
-
-    for (int i=0; i < 10; i++) 
-    {
-        printf("%04x ", ntohs(*(buf + i)));
-    }
-    printf("\nVr HL TOS  Len   ID Flg  off TTL Pro cks      Src    Dest    Data\n");
-    printf(" %d  %d  %02x %04x %04x   %d %04x  %02x  %02x %04x %s  %s\n",
-            ip->version,
-            ip->ihl,
-            ip->tos,
-            ntohs(ip->tot_len),
-            ntohs(ip->id),
-            ntohs(ip->frag_off) >> 13,
-            ntohs(ip->frag_off) & 0x1fff,
-            ip->ttl,
-            ip->protocol,
-            ntohs(ip->check),
-            src_addr,
-            dst_addr);
-            
-    printf("ICMP: type %d, code %d, size %d, id 0x%04x, seq 0x%04x\n",
-            ping_infos->icmp_type,
-            ping_infos->icmp_code,
-            ntohs(ip->tot_len) - (ip->ihl * 4),
-            ping_infos->id,
-            ping_infos->icmp_sequence);
+    printf("--- %s trace statistics ---\n", trace_infos->hostname);
+    printf("%d packets transmitted, %d packets received, %.0f%% packet loss\n", trace_infos->pckt_tx, trace_infos->pckt_rx, error_rate); //here I have to actually calculate the percentage of packet loss
+    printf("round-trip min/avg/max/stddev = %.3f/%.3f/%.3f/%.3f ms\n", trace_infos->time_min, time_avg, trace_infos->time_max, time_dev);
 }
