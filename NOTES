@@ -73,3 +73,30 @@ BILAN
 Success : Got into it and started putting things into perspective ! 
 Learned : How traceroute logic work with how TTL and end condition matters
 =====================================================
+=====================================================
+SESSION — 20.05.26 15:17
+=====================================================
+
+SESSION TASKS
+→ ANCHOR wasn't enough precise, so I need to see where I am at
+→ need to set up the timeout on the socket waiting for response
+→ Change some of the comments since I took the file from ping
+
+- - - - - - - - - - - - - - - - - - - - - - - - -
+JOURNAL
+- - - - - - - - - - - - - - - - - - - - - - - - -
+Ok started this session with figuring out where I am at, and what should I be doing.
+Im figuring out how to configure the socket to timeout when waiting for a response
+I need to use the setoptsock function for that.
+
+Also it is completely normal that I don't use connect() or bind() since we are
+using raw socket that are lower level then tcp/udp ones, so theres no need for
+them to be connected. 
+
+ANCHOR FOR NEXT SESSION
+Prochaine fois → 
+
+BILAN
+Success : 
+Learned :
+=====================================================
