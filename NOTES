@@ -1,8 +1,8 @@
 01.05.26 20:44
 
-Starting this file to follow the dev on my ft_traceroute and help me clear my mind when having to reflect on what to do. 
+Starting this file to follow the dev on my ft_traceroute and help me clear my mind when having to reflect on what to do.
 
-Traceroute is an utility that let you route the path a packet take to the target host. 
+Traceroute is an utility that let you route the path a packet take to the target host.
 Looking into how it works I realised that I could reuse a good part of my ft_ping since they both uses ICMP packet and raw socket.
 
 So to clarify what I have and what I need to change I'll write them as a reference. Then I'll write a list of the first things I'll need to do.
@@ -30,18 +30,18 @@ What I should do to start:
 	-Correct the main file so it take the right argument and right option
 	-Change the ttl before sending
 	-Correct the sending loop break condition and packets sent
-	
+
 =====================================================
 SESSION — 14.05.26 15:41
 =====================================================
 
 SESION TASKS
-I want to this session those 3 tasks to get it going :
+I want to do this session those 3 tasks to get it going :
 → [X] Change the makefile
 → [X] Change the header file
-→ [] Change the loop exit condition and logic
-→ [] add an array of 3 rtt in the struct
-	
+→ [X] Change the loop exit condition and logic
+→ [X] add an array of 3 rtt in the struct -> probes_RTT[3]
+
 - - - - - - - - - - - - - - - - - - - - - - - - -
 JOURNAL
 - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -59,7 +59,7 @@ Modifying the structure, the logic and reading the man traceroute made me unders
 The idea for the loop is:
 	-send a probe with ttl=1
 	-wait for reply under timeout value
-	-if timeout -> print * and continue
+	-if timeout -> print "*" and continue
 	-if reply, save rtt in array and continue
 	-when 3 rtt are saved increment ttl and go again
 I'm not sure if icmp sequence is relevant in traceroute
@@ -70,7 +70,7 @@ ANCHOR FOR NEXT SESSION
 Next time → Continue working on the main loop, the logic and exiting, imcrementing ttl etc
 
 BILAN
-Success : Got into it and started putting things into perspective ! 
+Success : Got into it and started putting things into perspective !
 Learned : How traceroute logic work with how TTL and end condition matters
 =====================================================
 =====================================================
@@ -78,7 +78,7 @@ SESSION — 20.05.26 15:17
 =====================================================
 
 SESSION TASKS
-→ ANCHOR wasn't enough precise, so I need to see where I am at
+→ ANCHOR wasn't precise enough, so I need to see where I am at
 → need to set up the timeout on the socket waiting for response
 → Change some of the comments since I took the file from ping
 
@@ -91,12 +91,38 @@ I need to use the setoptsock function for that.
 
 Also it is completely normal that I don't use connect() or bind() since we are
 using raw socket that are lower level then tcp/udp ones, so theres no need for
-them to be connected. 
+them to be connected.
 
 ANCHOR FOR NEXT SESSION
-Prochaine fois → 
+Prochaine fois →
 
 BILAN
-Success : 
+Success :
 Learned :
+=====================================================
+=====================================================
+SESSION — 09.09.26 13:49
+=====================================================
+
+SESSION TASKS
+-> Get back on the project, read the code to understand where I left at.
+-> At the end of this session, write down where Im at and what should be done next
+
+- - - - - - - - - - - - - - - - - - - - - - - - -
+JOURNAL
+- - - - - - - - - - - - - - - - - - - - - - - - -
+What I can understand quickly is that the main loop has to be redone, either from scratch to be sure of what is going on.
+Either from where it is, there are some leftover from ft_ping so It needs to be carefully understood.
+The step would be to re-study the inner working of the traceroute reference. Then write down each steps and from there we can
+start and code the logic inside the main.c file. Not much work but needs to be done in order to start from a sane codebase.
+
+ANCHOR FOR NEXT SESSION
+Need to write down in pseudocode each step of the traceroute main loop.
+Convert pseudocode in code and test its functionnality.
+I could take the loop I wrote in second journal entry, that would make this journal very useful.
+I need to details how and when things are displayed with the real traceroute because display_received isn't used for now.
+
+BILAN
+Success : reopened the project and established the next steps.
+Learned : What has to be done first to get back on the project. There's the traceroute loop written on the second journal entry.
 =====================================================

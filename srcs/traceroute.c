@@ -68,14 +68,11 @@ int trace_loop(t_trace_stats *trace_infos) {
       *(unsigned short *)(buffer + 2) = header.checksum;
 
       gettimeofday(&send_time, NULL);
-      sendto(raw_sock, buffer, datasize, 0, (struct sockaddr *)&dest,
-             sizeof(dest));
+      sendto(raw_sock, buffer, datasize, 0, (struct sockaddr *)&dest, sizeof(dest));
       trace_infos->send_time = &send_time;
       trace_infos->pckt_tx++;
       // NEED TO USE SOME SORT OF TIMEOUT ON THE RECVFROM
-      if ((trace_infos->recv_size =
-               recvfrom(raw_sock, recvbuf, sizeof(recvbuf), 0,
-                        (struct sockaddr *)&from, &fromlen)) == -1) {
+      if ((trace_infos->recv_size = recvfrom(raw_sock, recvbuf, sizeof(recvbuf), 0, (struct sockaddr *)&from, &fromlen)) == -1) {
         // CHANGE SO IT CONTINUE WHEN TIMEOUT REACH
         fprintf(stderr, "Error receiving on raw socket with error: %s\n",
                 strerror(errno));
@@ -84,8 +81,7 @@ int trace_loop(t_trace_stats *trace_infos) {
         gettimeofday(&rec_time, NULL);
         trace_infos->rec_time = &rec_time;
         // MAYBE NOT HERE FOR THE ASSIGNATION OF PROBE_RTT
-        trace_infos->probes_rtt[i] =
-            time_diff(trace_infos->send_time, trace_infos->rec_time);
+        trace_infos->probes_rtt[i] = time_diff(trace_infos->send_time, trace_infos->rec_time);
         parse_reply(recvbuf, trace_infos);
       }
     }
