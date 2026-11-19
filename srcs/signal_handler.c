@@ -7,7 +7,7 @@ void handle_sigint(int signum)
     (void)signum;
     g_running = false;
     //printf("Here print stats\n");
-    display_stats(gptr_trace_infos);
+    // display_stats(gptr_trace_infos);
 
     exit(0);
 }

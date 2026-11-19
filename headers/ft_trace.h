@@ -31,7 +31,7 @@
 
 #define IP_ADDR "127.0.0.1"
 #define PORT 12345
-#define PAYLOAD_SIZE 56
+#define PAYLOAD_SIZE 24
 
 typedef struct s_trace_stats {
   char *hostname;                // domain or ip address given by the user
@@ -48,6 +48,7 @@ typedef struct s_trace_stats {
   long long ltime_total;
 
   unsigned short max_hops;
+  unsigned short current_ttl;
 
   unsigned short icmp_sequence;
   unsigned int pckt_tx;  // nb of packet transmitted
@@ -84,7 +85,7 @@ void init_infos(t_trace_stats *trace_infos);
 double time_diff(struct timeval *send_time, struct timeval *rec_time);
 
 void display_transmit(t_trace_stats *trace_infos);
-void display_received(t_trace_stats *trace_infos);
+void display_received(t_trace_stats *trace_infos, int timeout);
 void display_stats(t_trace_stats *trace_infos);
 
 void handle_sigint(int signum);

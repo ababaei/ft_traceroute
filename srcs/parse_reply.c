@@ -1,4 +1,7 @@
 #include "ft_trace.h"
+#include <arpa/inet.h>
+#include <stdio.h>
+#include <sys/socket.h>
 
 /**********************************
  *
@@ -20,14 +23,20 @@ void parse_reply(char *buf, t_trace_stats *trace_infos) {
   struct iphdr *ip = (struct iphdr *)buf;
 
   icmp_ptr = (struct icmphdr *)(buf + (ip->ihl * 4));
+  // printf("%pI4", &ip->saddr);
+
+  char source[16];
+  // snprintf(source, 16, "%pI4", &ip->saddr);
+  inet_ntop(AF_INET, &ip->saddr, source, sizeof(source));
+  printf("%s", source);
 
   if (trace_infos->recv_size == 0)
     printf("ERROR\n");
 
-  if (icmp_ptr->un.echo.id != htons(getpid())) {
-    printf("Not our packet !\n");
-    return;
-  }
+  // if (icmp_ptr->un.echo.id != htons(getpid())) {
+  //   printf("Not our packet !\n");
+  //   return;
+  // }
   trace_infos->icmp_type = icmp_ptr->type;
 
   if (trace_infos->icmp_type == ECHO_REPLY)

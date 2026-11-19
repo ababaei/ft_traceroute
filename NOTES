@@ -126,3 +126,51 @@ BILAN
 Success : reopened the project and established the next steps.
 Learned : What has to be done first to get back on the project. There's the traceroute loop written on the second journal entry.
 =====================================================
+=====================================================
+SESSION — 22.10.26 11:32
+=====================================================
+
+SESSION TASKS
+-> Getting one probe to work with UDP
+
+- - - - - - - - - - - - - - - - - - - - - - - - -
+JOURNAL
+- - - - - - - - - - - - - - - - - - - - - - - - -
+To start of and have a guide through the session I'll write the different steps I think of for now.
+
+[X] Think and write on a paper how should I manage the UDP version of the communication.
+
+In anyway I will need an ICMP raw socket to receive the reply. Even with sending with an UDP socket. An other thing I'm starting to realize is the use of the select function. In a better implementation you'd have multiple UDP socket and use select to see which one is ready to send packets.
+
+ANCHOR FOR NEXT SESSION
+Start creating the 2 socket needed (one UDP and one ICMP).
+Clean the loop so it doesn't only focus on ICMP.
+
+BILAN
+Success : Managed to write down the difference between using only ICMP and with UDP
+Learned : How select is used in traceroute, and how a true implementation of traceroute is done.
+=====================================================
+=====================================================
+SESSION — 22.10.26 13:35
+=====================================================
+
+SESSION TASKS
+-> Create 2 sockets needed
+-> Rework the main loop
+
+- - - - - - - - - - - - - - - - - - - - - - - - -
+JOURNAL
+- - - - - - - - - - - - - - - - - - - - - - - - -
+Nice session this time, reworked all the main loop.
+Started by sending only one packet and receiving it. When it worked I made it so it send 3 probes.
+Now it succesfully send 3 probes and receives them. It also compute  the round-trip time for each probe and print them.
+At the end of the session I managed to convert the ip->saddr into a string with inet_ntop.
+
+ANCHOR FOR NEXT SESSION
+Clean the displaying, and make it so if its the same saddr don't print it.
+Figure out why it doesn't receive same addresses as real tracerout
+
+BILAN
+Success : Unlock the mental blockade I had starting working on the main loop
+Learned : How traceroute worked more in detail, and also how to print the source address from an ip header.
+=====================================================
